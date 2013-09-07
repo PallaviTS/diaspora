@@ -89,13 +89,35 @@ var app = {
     Backbone.history.start({pushState: true});
 
     // there's probably a better way to do this...
-    $("a[rel=backbone]").live("click", function(evt){
+    $("a").live("click", function(evt){
       evt.preventDefault();
-      var link = $(this);
+      var link = $(this),
+          dialog = null;
 
-      $(".stream_title").text(link.text())
-      app.router.navigate(link.attr("href").substring(1) ,true)
+      if(__UserActivity.get('keypress')){
+        dialog = confirm("Do you want to stay on this page ?");
+
+        if(dialog === true) {
+
+          if(link.attr('rel').toUpperCase() === 'BACKBONE')  {
+            $(".stream_title").text(link.text())
+            app.router.navigate(link.attr("href").substring(1) ,true)
+          }else if(link.attr('rel').toUpperCase() === 'OUTSIDE') {
+            window.location.href = link.attr("href");
+          }
+        }
+      }else {
+        // console.log(link, link.attr('rel'), link.attr('rel').toUpperCase());
+        if(link.attr('rel').toUpperCase() === 'BACKBONE')  {
+            $(".stream_title").text(link.text())
+            app.router.navigate(link.attr("href").substring(1) ,true)
+          }else if(link.attr('rel').toUpperCase() === 'OUTSIDE') {
+            window.location.href = link.attr("href");
+          }
+      }
     });
+
+
   },
 
   setupGlobalViews: function() {

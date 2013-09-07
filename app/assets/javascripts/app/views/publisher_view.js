@@ -26,7 +26,8 @@ app.views.Publisher = Backbone.View.extend(_.extend(
     "click .dropdown .dropdown_list li": "toggleAspect",
     "click #locator" : "showLocation",
     "click #hide_location" : "destroyLocation",
-    "keypress #location_address" : "avoidEnter"
+    "keypress #location_address" : "avoidEnter",
+    "keypress #status_message_fake_text" : "keypress"
   },
 
   tooltipSelector: ".service_icon",
@@ -78,8 +79,9 @@ app.views.Publisher = Backbone.View.extend(_.extend(
   },
 
   createStatusMessage : function(evt) {
-    if(evt){ evt.preventDefault(); }
 
+    if(evt){ evt.preventDefault(); }
+    __UserActivity.set({ keypress : false });
     //add missing mentions at end of post:
     this.handleTextchange();
 
@@ -227,6 +229,13 @@ app.views.Publisher = Backbone.View.extend(_.extend(
     }
   },
 
+  keypress :function(evt){
+    // window.keypress = evt.keyCode;
+    // __UserActivity.get('keypress')
+
+    __UserActivity.set({ keypress : true });
+  },
+
   clear : function() {
     // clear text(s)
     this.el_input.val('');
@@ -260,11 +269,11 @@ app.views.Publisher = Backbone.View.extend(_.extend(
   },
 
   tryClose : function(){
-    // if it is not submittable, close it. 
+    // if it is not submittable, close it.
     if( !this._submittable() ){
       this.close()
     }
-  },  
+  },
 
   open : function() {
     // visually 'open' the publisher
